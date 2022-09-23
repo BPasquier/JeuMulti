@@ -16,7 +16,7 @@ public class SyncroObjetcsManager : MonoBehaviour
         {
             StatusLabels();
 
-            SubmitNewPosition();
+            SubmitNewPosition(new Vector3(19.63382f, 5.8f, 0.05f));
         }
 
         GUILayout.EndArea();
@@ -39,20 +39,20 @@ public class SyncroObjetcsManager : MonoBehaviour
         GUILayout.Label("Mode: " + mode);
     }
 
-    static void SubmitNewPosition()
+    public void SubmitNewPosition(Vector3 pos)
     {
         if (GUILayout.Button(NetworkManager.Singleton.IsServer ? "Move" : "Request Position Change"))
         {
             if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
             {
                 foreach (ulong uid in NetworkManager.Singleton.ConnectedClientsIds)
-                    NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).GetComponent<SyncroObjects>().Move();
+                    NetworkManager.Singleton.SpawnManager.GetPlayerNetworkObject(uid).GetComponent<SyncroObjects>().Move(pos);
             }
             else
             {
                 var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
                 var player = playerObject.GetComponent<SyncroObjects>();
-                player.Move();
+                player.Move(pos);
             }
         }
     }

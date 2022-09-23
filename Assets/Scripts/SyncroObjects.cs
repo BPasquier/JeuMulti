@@ -6,36 +6,41 @@ using Unity.Netcode;
 public class SyncroObjects : NetworkBehaviour
 {
     public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+    [SerializeField]
+    private GameObject m_cam;
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            Move();
+            Vector3 tmp = new Vector3(19.63382f, 5.8f, 0.05f);
+            Move(tmp);
         }
+        else
+            m_cam.SetActive(false);
     }
 
-    public void Move()
+    public void Move(Vector3 pos)
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            var randomPosition = GetRandomPositionOnPlane();
-            transform.position = randomPosition;
-            Position.Value = randomPosition;
+            //var tmp = GetPositionOnPlane();
+            transform.position = pos;
+            Position.Value = pos;
         }
         else
         {
-            SubmitPositionRequestServerRpc();
+            SubmitPositionRequestServerRpc(pos);
         }
     }
 
     [ServerRpc]
-    void SubmitPositionRequestServerRpc(ServerRpcParams rpcParams = default)
+    void SubmitPositionRequestServerRpc(Vector3 p_pos, ServerRpcParams rpcParams = default)
     {
-        Position.Value = GetRandomPositionOnPlane();
+        Position.Value = p_pos;
     }
 
-    static Vector3 GetRandomPositionOnPlane()
+    static Vector3 GetPositionOnPlane()
     {
         return new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
     }
