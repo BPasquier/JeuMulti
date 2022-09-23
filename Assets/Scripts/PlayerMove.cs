@@ -62,23 +62,16 @@ public class PlayerMove : MonoBehaviour
 
         var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
         var player = playerObject.GetComponent<SyncroObjects>();
-        /*if (Input.GetKey(KeyCode.Z) == true)
-            pos = playerObject.transform.position + new Vector3(0, 0, m_speed * Time.deltaTime);
-        if (Input.GetKey(KeyCode.S) == true)
-            pos = playerObject.transform.position + new Vector3(0, 0, -m_speed * Time.deltaTime);
-        if (Input.GetKey(KeyCode.D) == true)
-            pos = playerObject.transform.position + new Vector3(m_speed * Time.deltaTime, 0, 0);
-        if (Input.GetKey(KeyCode.Q) == true)
-            pos = playerObject.transform.position + new Vector3(-m_speed * Time.deltaTime, 0, 0);*/
+        pos = playerObject.transform.position;
 
         if (Input.GetKey(KeyCode.Z) == true)
-            pos = playerObject.transform.position + transform.forward * m_speed * Time.deltaTime;
+            pos = pos + transform.forward * m_speed * Time.deltaTime;
         if (Input.GetKey(KeyCode.S) == true)
-            pos = playerObject.transform.position + transform.forward * -m_speed * Time.deltaTime;
+            pos = pos + transform.forward * -m_speed * Time.deltaTime;
         if (Input.GetKey(KeyCode.D) == true)
-            pos = playerObject.transform.position + transform.right * m_speed * Time.deltaTime;
+            pos = pos + transform.right * m_speed * Time.deltaTime;
         if (Input.GetKey(KeyCode.Q) == true)
-            pos = playerObject.transform.position + transform.right * -m_speed * Time.deltaTime;
+            pos = pos + transform.right * -m_speed * Time.deltaTime;
 
         /*if (Input.GetKeyDown(KeyCode.UpArrow) == true)
             pos = playerObject.transform.position + new Vector3(0, 0, 1f);
