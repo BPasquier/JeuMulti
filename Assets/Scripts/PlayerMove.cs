@@ -12,6 +12,8 @@ public class PlayerMove : MonoBehaviour
     public Transform cam;
     private Vector3 moveDirection;
     private bool menu;
+    private Animator animator;
+    public GameObject target;
 
     [Range(-80, -15)]
     public int minAngle = -80;
@@ -37,6 +39,7 @@ public class PlayerMove : MonoBehaviour
     {
         //StartCoroutine(MovePlayer());
         pos = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().transform.position;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -64,15 +67,34 @@ public class PlayerMove : MonoBehaviour
         var player = playerObject.GetComponent<SyncroObjects>();
         pos = playerObject.transform.position;
 
+        animator.SetFloat("Speed", 0);
         if (Input.GetKey(KeyCode.Z) == true)
+        {
             pos = pos + transform.forward * m_speed * Time.deltaTime;
+            animator.SetFloat("Speed", m_speed);
+        }
         if (Input.GetKey(KeyCode.S) == true)
+        {
             pos = pos + transform.forward * -m_speed * Time.deltaTime;
+            animator.SetFloat("Speed", m_speed);
+        }
         if (Input.GetKey(KeyCode.D) == true)
+        {
             pos = pos + transform.right * m_speed * Time.deltaTime;
+            animator.SetFloat("Speed", m_speed);
+        }
         if (Input.GetKey(KeyCode.Q) == true)
+        {
             pos = pos + transform.right * -m_speed * Time.deltaTime;
+            animator.SetFloat("Speed", m_speed);
+        }
+                
+        if (Input.GetKey(KeyCode.E) == true)
+        {
+            Morph();
+        }
 
+        Aim();
         /*if (Input.GetKeyDown(KeyCode.UpArrow) == true)
             pos = playerObject.transform.position + new Vector3(0, 0, 1f);
         if (Input.GetKeyDown(KeyCode.DownArrow) == true)
@@ -94,6 +116,32 @@ public class PlayerMove : MonoBehaviour
         camRotation.x = Mathf.Clamp(camRotation.x, minAngle, maxAngle);
 
         cam.localEulerAngles = camRotation;
+    }
+
+    private void Aim()
+    {
+        RaycastHit hit;
+        Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
+        target.transform.position = hit.point;
+    }
+
+    private void Morph()
+    {
+        RaycastHit hit;
+        Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
+            
+        if (hit.transform.gameObject.tag == "MorphableObject")
+        {
+
+            MeshRenderer[] skin = GetComponentsInChildren<MeshRenderer>();
+            foreach (MeshRenderer mesh in skin)
+                mesh.enabled = false;
+
+            MeshRenderer ObjectSkin = hit.transform.GetComponentInChildren<MeshRenderer>();
+            ObjectSkin.enabled = true;
+            Collider collider = transform.GetComponent<Collider>();
+            collider = hit.transform.GetComponent<Collider>();
+        }
     }
 
     /*IEnumerator MovePlayer()
