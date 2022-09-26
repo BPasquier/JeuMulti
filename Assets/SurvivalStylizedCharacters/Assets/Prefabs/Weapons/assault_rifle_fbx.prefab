@@ -71,6 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1671509569088316835}
+  - component: {fileID: 6819915344420907647}
   m_Layer: 0
   m_Name: assault_rifle_fbx
   m_TagString: Untagged
@@ -98,6 +99,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6819915344420907647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1671509569088223619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d502af378d06242b0593e499fc38b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 4538348541572149021, guid: d83e43b01cefefd4f86e3191d826f495, type: 3}
+  bulletSpawnPoint: {fileID: 5632692250534584622}
+  bulletSpeed: 75
 --- !u!1 &1671509569088223621
 GameObject:
   m_ObjectHideFlags: 0

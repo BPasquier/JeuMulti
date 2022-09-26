@@ -9,6 +9,7 @@ TagManager:
   - Undefined
   - CameraMenu
   - PossibleForm
+  - Bullet
   layers:
   - Default
   - TransparentFX

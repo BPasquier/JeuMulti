@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class BulletProjectile : MonoBehaviour
+public class BulletProjectile : NetworkBehaviour
 {
     private Rigidbody bulletRigidBody;
+    public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
+    public float m_speed = 10;
 
     private void Awake()
     {
@@ -15,17 +19,30 @@ public class BulletProjectile : MonoBehaviour
         float speed = 10f;
         bulletRigidBody.velocity = Vector3.forward;
     }
-    private void OnTriggerEnter(Collider other)
+
+    private void Update()
     {
-         Destroy(gameObject);
+        transform.position = transform.position + transform.forward * m_speed * Time.deltaTime;
+        synchro();
     }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Player")
-        {
-            //Coroutine explosion
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
+    }
 
+
+    public void synchro()
+    {
+        if (IsOwner)
+        {
+            Position.Value = transform.position;
+            Rotation.Value = transform.rotation;
+        }
+        else
+        {
+            transform.position = Position.Value;
+            transform.rotation = Rotation.Value;
+        }
     }
 }
