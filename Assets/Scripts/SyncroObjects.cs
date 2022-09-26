@@ -14,7 +14,7 @@ public class SyncroObjects : NetworkBehaviour
     {
         if (IsOwner)
         {
-            transform.position = new Vector3(19.63382f, 5.8f, 0.05f);
+            transform.position = new Vector3(19.63382f, 4.75f, 0.05f);
             synchro();
         }
         else
