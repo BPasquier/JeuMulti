@@ -22,8 +22,6 @@ public class BulletProjectile : NetworkBehaviour
 
     private void Update()
     {
-       // bulletRigidBody.velocity = Vector3.forward;
-        transform.position = transform.position + transform.forward * m_speed * Time.deltaTime;
         synchro();
     }
 

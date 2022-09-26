@@ -124,7 +124,7 @@ public class PlayerMove : NetworkBehaviour
             playerObject.transform.position = playerObject.transform.position + transform.right * -m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
-        if (Input.GetKeyDown(KeyCode.Space) == true)
+        if (Input.GetKeyDown(KeyCode.Space) == true && (gameObject.GetComponent<Rigidbody>().velocity.y > -.01 && gameObject.GetComponent<Rigidbody>().velocity.y < .01))
         {
             gameObject.GetComponent<Rigidbody>().velocity += Vector3.up*5;
         }
