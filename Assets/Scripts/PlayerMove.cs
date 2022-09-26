@@ -13,14 +13,15 @@ public class PlayerMove : MonoBehaviour
     private Vector3 moveDirection;
     private bool menu;
     private Animator animator;
-    public GameObject target;
-
+    Transform[] listTransform;
     [Range(-80, -15)]
     public int minAngle = -80;
     [Range(30, 80)]
     public int maxAngle = 80;
     [Range(50, 500)]
     public int sensitivity = 200;
+
+    public GameObject bodySpin;
 
     //
     Vector3 pos;
@@ -40,6 +41,22 @@ public class PlayerMove : MonoBehaviour
         //StartCoroutine(MovePlayer());
         pos = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().transform.position;
         animator = GetComponent<Animator>();
+
+        listTransform = gameObject.GetComponentsInChildren<Transform>();
+        foreach (Transform possibleObject in listTransform)
+        {
+            if (possibleObject.tag == "PossibleForm")
+            {
+                if (possibleObject.name == "Body")
+                {
+                    possibleObject.gameObject.SetActive(true);
+                }
+                else
+                {
+                    possibleObject.gameObject.SetActive(false);
+                }
+            }
+        }
     }
 
     // Update is called once per frame
@@ -115,6 +132,7 @@ public class PlayerMove : MonoBehaviour
         camRotation.x -= Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
         camRotation.x = Mathf.Clamp(camRotation.x, minAngle, maxAngle);
 
+        bodySpin.transform.localEulerAngles = camRotation;
         cam.localEulerAngles = camRotation;
     }
 
@@ -122,25 +140,29 @@ public class PlayerMove : MonoBehaviour
     {
         RaycastHit hit;
         Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
-        target.transform.position = hit.point;
     }
 
     private void Morph()
     {
         RaycastHit hit;
         Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
-            
+
         if (hit.transform.gameObject.tag == "MorphableObject")
         {
-
-            MeshRenderer[] skin = GetComponentsInChildren<MeshRenderer>();
-            foreach (MeshRenderer mesh in skin)
-                mesh.enabled = false;
-
-            MeshRenderer ObjectSkin = hit.transform.GetComponentInChildren<MeshRenderer>();
-            ObjectSkin.enabled = true;
-            Collider collider = transform.GetComponent<Collider>();
-            collider = hit.transform.GetComponent<Collider>();
+            foreach (Transform possibleObject in listTransform)
+            {
+                if (possibleObject.tag == "PossibleForm")
+                {
+                    if (hit.transform.name.IndexOf(possibleObject.name)>-1)
+                    {
+                        possibleObject.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        possibleObject.gameObject.SetActive(false);
+                    }
+                }
+            }
         }
     }
 
