@@ -39,9 +39,7 @@ public class PlayerMove : NetworkBehaviour
     {
         //StartCoroutine(MovePlayer());
         animator = GetComponent<Animator>();
-
         SupprCameraMenu();
-
         InitMorph();
     }
 
