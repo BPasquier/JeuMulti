@@ -124,6 +124,10 @@ public class PlayerMove : NetworkBehaviour
             playerObject.transform.position = playerObject.transform.position + transform.right * -m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
+        if (Input.GetKeyDown(KeyCode.Space) == true)
+        {
+            gameObject.GetComponent<Rigidbody>().velocity += Vector3.up*5;
+        }
 
         if (Input.GetKey(KeyCode.E) == true)
         {
@@ -156,6 +160,8 @@ public class PlayerMove : NetworkBehaviour
 
         if (hit.transform.gameObject.tag == "MorphableObject")
         {
+            CapsuleCollider collider = GetComponent<CapsuleCollider>();
+            collider.enabled = false;
             foreach (Transform possibleObject in listTransform)
             {
                 if (possibleObject.tag == "PossibleForm")
@@ -163,6 +169,7 @@ public class PlayerMove : NetworkBehaviour
                     if (hit.transform.name.IndexOf(possibleObject.name)>-1)
                     {
                         possibleObject.gameObject.SetActive(true);
+                        transform.position = transform.position + new Vector3(0f,.2f,0f);
                     }
                     else
                     {
