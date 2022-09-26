@@ -20,9 +20,13 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.tag=="Bullet")
+        if (!hunter)
         {
-            HP--;
+            if (collision.transform.tag == "Bullet")
+            {
+                HP--;
+                print("AYE BORDEL DE MERDE !! STOP TK");
+            }
         }
     }
 }

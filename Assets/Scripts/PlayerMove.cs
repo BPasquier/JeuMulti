@@ -7,6 +7,11 @@ using Unity.Netcode;
 
 public class PlayerMove : NetworkBehaviour
 {
+
+    public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<CharacterInfo> MorphName = new(writePerm: NetworkVariableWritePermission.Owner);
+
     // Movement Rotation
     private Vector3 camRotation;
     public Transform cam;
@@ -68,7 +73,23 @@ public class PlayerMove : NetworkBehaviour
                 Rotate();
                 Move();
             }
-            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().synchro();
+            else
+                print("test");
+            synchro2();
+        }
+    }
+
+    private void synchro2()
+    {
+        if (IsOwner)
+        {
+            Position.Value = transform.position;
+            Rotation.Value = transform.rotation;
+        }
+        else
+        {
+            transform.position = Position.Value;
+            transform.rotation = Rotation.Value;
         }
     }
 

@@ -20,7 +20,7 @@ public class Gun : NetworkBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (IsServer)
+            /*if (IsServer)
             {
                 Debug.Log("tir Serv");
                 shoot();
@@ -29,7 +29,7 @@ public class Gun : NetworkBehaviour
             {
                 Debug.Log("tir client");
                 SubmitRequestShotServerRpc();
-            }
+            }*/
         }
     }
 

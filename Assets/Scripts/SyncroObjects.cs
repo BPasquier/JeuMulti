@@ -7,6 +7,7 @@ public class SyncroObjects : NetworkBehaviour
 {
     public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
+
     [SerializeField]
     private GameObject m_cam;
 
@@ -58,10 +59,5 @@ public class SyncroObjects : NetworkBehaviour
     static Vector3 GetPositionOnPlane()
     {
         return new Vector3(Random.Range(-3f, 3f), 1f, Random.Range(-3f, 3f));
-    }
-
-    void Update()
-    {
-
     }
 }
