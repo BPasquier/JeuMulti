@@ -1106,6 +1106,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Position:
     m_InternalValue: {x: 0, y: 0, z: 0}
+  Rotation:
+    m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
   m_cam: {fileID: 8203648815809246996}
 --- !u!114 &4160029432390594179
 MonoBehaviour:
@@ -1136,7 +1138,7 @@ Rigidbody:
   m_Mass: 90
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0

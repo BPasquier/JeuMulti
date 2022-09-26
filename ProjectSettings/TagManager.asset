@@ -6,6 +6,8 @@ TagManager:
   tags:
   - SyncroObjetsManager
   - MorphableObject
+  - Undefined
+  - CameraMenu
   layers:
   - Default
   - TransparentFX

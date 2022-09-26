@@ -5,7 +5,8 @@ using Unity.Netcode;
 
 public class SyncroObjects : NetworkBehaviour
 {
-    public NetworkVariable<Vector3> Position = new NetworkVariable<Vector3>();
+    public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField]
     private GameObject m_cam;
 
@@ -13,11 +14,25 @@ public class SyncroObjects : NetworkBehaviour
     {
         if (IsOwner)
         {
-            Vector3 tmp = new Vector3(19.63382f, 5.8f, 0.05f);
-            Move(tmp);
+            transform.position = new Vector3(19.63382f, 5.8f, 0.05f);
+            synchro();
         }
         else
             m_cam.SetActive(false);
+    }
+
+    public void synchro()
+    {
+        if (IsOwner)
+        {
+            Position.Value = transform.position;
+            Rotation.Value = transform.rotation;
+        }
+        else
+        {
+            transform.position = Position.Value;
+            transform.rotation = Rotation.Value;
+        }
     }
 
     public void Move(Vector3 pos)
@@ -48,5 +63,6 @@ public class SyncroObjects : NetworkBehaviour
     void Update()
     {
         transform.position = Position.Value;
+        transform.rotation = Rotation.Value;
     }
 }

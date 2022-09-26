@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Diagnostics;
 using Unity.Netcode;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : NetworkBehaviour
 {
     // Movement Rotation
     private Vector3 camRotation;
@@ -40,6 +40,9 @@ public class PlayerMove : MonoBehaviour
         //StartCoroutine(MovePlayer());
         pos = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().transform.position;
         animator = GetComponent<Animator>();
+        GameObject[] tmp = GameObject.FindGameObjectsWithTag("CameraMenu");
+        foreach (GameObject tmpCam in tmp)
+            tmpCam.SetActive(false);
     }
 
     // Update is called once per frame
@@ -61,8 +64,18 @@ public class PlayerMove : MonoBehaviour
             }
         }
         if (menu == false)
-            Rotate();
+        {
+            if (IsOwner)
+            {
+                Rotate();
+                Move();
+            }
+            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().synchro();
+        }
+    }
 
+    private void Move()
+    {
         var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
         var player = playerObject.GetComponent<SyncroObjects>();
         pos = playerObject.transform.position;
@@ -88,24 +101,15 @@ public class PlayerMove : MonoBehaviour
             pos = pos + transform.right * -m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
-                
+
         if (Input.GetKey(KeyCode.E) == true)
         {
             Morph();
         }
 
         Aim();
-        /*if (Input.GetKeyDown(KeyCode.UpArrow) == true)
-            pos = playerObject.transform.position + new Vector3(0, 0, 1f);
-        if (Input.GetKeyDown(KeyCode.DownArrow) == true)
-            pos = playerObject.transform.position + new Vector3(0, 0, -1f);
-        if (Input.GetKeyDown(KeyCode.RightArrow) == true)
-            pos = playerObject.transform.position + new Vector3(1f, 0, 0);
-        if (Input.GetKeyDown(KeyCode.LeftArrow) == true)
-            pos = playerObject.transform.position + new Vector3(-1f, 0, 0);*/
 
         playerObject.transform.position = pos;
-        player.Move(pos);
     }
 
     private void Rotate()
@@ -144,12 +148,4 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    /*IEnumerator MovePlayer()
-    {
-        while(true)
-        {
-            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().Move(pos);
-            yield return new WaitForSeconds(0.001f);
-        }
-    }*/
 }
