@@ -62,7 +62,6 @@ public class SyncroObjects : NetworkBehaviour
 
     void Update()
     {
-        transform.position = Position.Value;
-        transform.rotation = Rotation.Value;
+
     }
 }
