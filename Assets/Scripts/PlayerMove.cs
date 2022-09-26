@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Diagnostics;
 using Unity.Netcode;
 
-public class PlayerMove : NetworkBehaviour
+public class PlayerMove : MonoBehaviour
 {
     // Movement Rotation
     private Vector3 camRotation;
@@ -13,14 +13,15 @@ public class PlayerMove : NetworkBehaviour
     private Vector3 moveDirection;
     private bool menu;
     private Animator animator;
-    public GameObject target;
-
+    Transform[] listTransform;
     [Range(-80, -15)]
     public int minAngle = -80;
     [Range(30, 80)]
     public int maxAngle = 80;
     [Range(50, 500)]
     public int sensitivity = 200;
+
+    public GameObject bodySpin;
 
     //
     Vector3 pos;
@@ -40,9 +41,22 @@ public class PlayerMove : NetworkBehaviour
         //StartCoroutine(MovePlayer());
         pos = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().transform.position;
         animator = GetComponent<Animator>();
-        GameObject[] tmp = GameObject.FindGameObjectsWithTag("CameraMenu");
-        foreach (GameObject tmpCam in tmp)
-            tmpCam.SetActive(false);
+
+        listTransform = gameObject.GetComponentsInChildren<Transform>();
+        foreach (Transform possibleObject in listTransform)
+        {
+            if (possibleObject.tag == "PossibleForm")
+            {
+                if (possibleObject.name == "Body")
+                {
+                    possibleObject.gameObject.SetActive(true);
+                }
+                else
+                {
+                    possibleObject.gameObject.SetActive(false);
+                }
+            }
+        }
     }
 
     // Update is called once per frame
@@ -64,18 +78,8 @@ public class PlayerMove : NetworkBehaviour
             }
         }
         if (menu == false)
-        {
-            if (IsOwner)
-            {
-                Rotate();
-                Move();
-            }
-            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().synchro();
-        }
-    }
+            Rotate();
 
-    private void Move()
-    {
         var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
         var player = playerObject.GetComponent<SyncroObjects>();
         pos = playerObject.transform.position;
@@ -101,15 +105,24 @@ public class PlayerMove : NetworkBehaviour
             pos = pos + transform.right * -m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
-
+                
         if (Input.GetKey(KeyCode.E) == true)
         {
             Morph();
         }
 
         Aim();
+        /*if (Input.GetKeyDown(KeyCode.UpArrow) == true)
+            pos = playerObject.transform.position + new Vector3(0, 0, 1f);
+        if (Input.GetKeyDown(KeyCode.DownArrow) == true)
+            pos = playerObject.transform.position + new Vector3(0, 0, -1f);
+        if (Input.GetKeyDown(KeyCode.RightArrow) == true)
+            pos = playerObject.transform.position + new Vector3(1f, 0, 0);
+        if (Input.GetKeyDown(KeyCode.LeftArrow) == true)
+            pos = playerObject.transform.position + new Vector3(-1f, 0, 0);*/
 
         playerObject.transform.position = pos;
+        player.Move(pos);
     }
 
     private void Rotate()
@@ -119,6 +132,7 @@ public class PlayerMove : NetworkBehaviour
         camRotation.x -= Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
         camRotation.x = Mathf.Clamp(camRotation.x, minAngle, maxAngle);
 
+        bodySpin.transform.localEulerAngles = camRotation;
         cam.localEulerAngles = camRotation;
     }
 
@@ -126,26 +140,38 @@ public class PlayerMove : NetworkBehaviour
     {
         RaycastHit hit;
         Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
-        target.transform.position = hit.point;
     }
 
     private void Morph()
     {
         RaycastHit hit;
         Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
-            
+
         if (hit.transform.gameObject.tag == "MorphableObject")
         {
-
-            MeshRenderer[] skin = GetComponentsInChildren<MeshRenderer>();
-            foreach (MeshRenderer mesh in skin)
-                mesh.enabled = false;
-
-            MeshRenderer ObjectSkin = hit.transform.GetComponentInChildren<MeshRenderer>();
-            ObjectSkin.enabled = true;
-            Collider collider = transform.GetComponent<Collider>();
-            collider = hit.transform.GetComponent<Collider>();
+            foreach (Transform possibleObject in listTransform)
+            {
+                if (possibleObject.tag == "PossibleForm")
+                {
+                    if (hit.transform.name.IndexOf(possibleObject.name)>-1)
+                    {
+                        possibleObject.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        possibleObject.gameObject.SetActive(false);
+                    }
+                }
+            }
         }
     }
 
+    /*IEnumerator MovePlayer()
+    {
+        while(true)
+        {
+            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().Move(pos);
+            yield return new WaitForSeconds(0.001f);
+        }
+    }*/
 }
