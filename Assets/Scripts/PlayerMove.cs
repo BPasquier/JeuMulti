@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System.Diagnostics;
 using Unity.Netcode;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMove : NetworkBehaviour
 {
     // Movement Rotation
     private Vector3 camRotation;
@@ -24,7 +24,6 @@ public class PlayerMove : MonoBehaviour
     public GameObject bodySpin;
 
     //
-    Vector3 pos;
     [SerializeField]
     private float m_speed;
 
@@ -39,24 +38,11 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         //StartCoroutine(MovePlayer());
-        pos = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().transform.position;
         animator = GetComponent<Animator>();
 
-        listTransform = gameObject.GetComponentsInChildren<Transform>();
-        foreach (Transform possibleObject in listTransform)
-        {
-            if (possibleObject.tag == "PossibleForm")
-            {
-                if (possibleObject.name == "Body")
-                {
-                    possibleObject.gameObject.SetActive(true);
-                }
-                else
-                {
-                    possibleObject.gameObject.SetActive(false);
-                }
-            }
-        }
+        SupprCameraMenu();
+
+        InitMorph();
     }
 
     // Update is called once per frame
@@ -78,51 +64,74 @@ public class PlayerMove : MonoBehaviour
             }
         }
         if (menu == false)
-            Rotate();
+        {
+            if (IsOwner)
+            {
+                Rotate();
+                Move();
+            }
+            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().synchro();
+        }
+    }
 
+    private void SupprCameraMenu()
+    {
+        GameObject[] tmp = GameObject.FindGameObjectsWithTag("CameraMenu");
+        foreach (GameObject tmpCam in tmp)
+            tmpCam.SetActive(false);
+    }
+
+    private void InitMorph()
+    {
+        listTransform = gameObject.GetComponentsInChildren<Transform>();
+        foreach (Transform possibleObject in listTransform)
+        {
+            if (possibleObject.tag == "PossibleForm")
+            {
+                if (possibleObject.name == "Body")
+                {
+                    possibleObject.gameObject.SetActive(true);
+                }
+                else
+                {
+                    possibleObject.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    private void Move()
+    {
         var playerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
         var player = playerObject.GetComponent<SyncroObjects>();
-        pos = playerObject.transform.position;
 
         animator.SetFloat("Speed", 0);
         if (Input.GetKey(KeyCode.Z) == true)
         {
-            pos = pos + transform.forward * m_speed * Time.deltaTime;
+            playerObject.transform.position = playerObject.transform.position + transform.forward * m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
         if (Input.GetKey(KeyCode.S) == true)
         {
-            pos = pos + transform.forward * -m_speed * Time.deltaTime;
+            playerObject.transform.position = playerObject.transform.position + transform.forward * -m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
         if (Input.GetKey(KeyCode.D) == true)
         {
-            pos = pos + transform.right * m_speed * Time.deltaTime;
+            playerObject.transform.position = playerObject.transform.position + transform.right * m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
         if (Input.GetKey(KeyCode.Q) == true)
         {
-            pos = pos + transform.right * -m_speed * Time.deltaTime;
+            playerObject.transform.position = playerObject.transform.position + transform.right * -m_speed * Time.deltaTime;
             animator.SetFloat("Speed", m_speed);
         }
-                
+
         if (Input.GetKey(KeyCode.E) == true)
         {
             Morph();
         }
-
         Aim();
-        /*if (Input.GetKeyDown(KeyCode.UpArrow) == true)
-            pos = playerObject.transform.position + new Vector3(0, 0, 1f);
-        if (Input.GetKeyDown(KeyCode.DownArrow) == true)
-            pos = playerObject.transform.position + new Vector3(0, 0, -1f);
-        if (Input.GetKeyDown(KeyCode.RightArrow) == true)
-            pos = playerObject.transform.position + new Vector3(1f, 0, 0);
-        if (Input.GetKeyDown(KeyCode.LeftArrow) == true)
-            pos = playerObject.transform.position + new Vector3(-1f, 0, 0);*/
-
-        playerObject.transform.position = pos;
-        player.Move(pos);
     }
 
     private void Rotate()
@@ -165,13 +174,4 @@ public class PlayerMove : MonoBehaviour
             }
         }
     }
-
-    /*IEnumerator MovePlayer()
-    {
-        while(true)
-        {
-            NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject().GetComponent<SyncroObjects>().Move(pos);
-            yield return new WaitForSeconds(0.001f);
-        }
-    }*/
 }
