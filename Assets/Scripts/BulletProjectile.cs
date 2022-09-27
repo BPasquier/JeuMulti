@@ -31,10 +31,13 @@ public class BulletProjectile : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-        if (collision.transform.tag == "Player" || collision.transform.tag == "PossibleForm")
+        if (collision.transform.tag == "Player")
         {
-            Debug.Log(collision.gameObject);
-            //collision.gameObject.GetComponent<DamageManager>().dealDamage();
+            collision.gameObject.GetComponent<PlayerMove>().dealDamage(2);
+        }
+        if (collision.transform.tag == "PossibleForm")
+        {
+            collision.gameObject.GetComponentInParent<PlayerMove>().dealDamage(2);
         }
     }
 

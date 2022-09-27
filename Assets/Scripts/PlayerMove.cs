@@ -20,6 +20,7 @@ public class PlayerMove : NetworkBehaviour
     public int maxAngle = 80;
     [Range(50, 500)]
     public int sensitivity = 200;
+    public int playerHealth = 10;
 
     public GameObject bodySpin;
 
@@ -29,6 +30,9 @@ public class PlayerMove : NetworkBehaviour
     //
     [SerializeField]
     private float m_speed;
+
+    [SerializeField]
+    Canvas deathCanvas;
 
     private void Awake()
     {
@@ -68,8 +72,11 @@ public class PlayerMove : NetworkBehaviour
         {
             if (IsOwner)
             {
-                Rotate();
-                Move();
+                if (playerHealth > 0)
+                {
+                    Rotate();
+                    Move();
+                }
             }
             synchro2();
         }
@@ -193,6 +200,15 @@ public class PlayerMove : NetworkBehaviour
                     }
                 }
             }
+        }
+    }
+    public void dealDamage(int damage)
+    {
+        playerHealth -= damage;
+        if (playerHealth<=0)
+        {
+            UnityEngine.Debug.LogWarning("DealDamages");
+            deathCanvas.gameObject.SetActive(true);
         }
     }
 }
