@@ -177,8 +177,6 @@ public class PlayerMove : NetworkBehaviour
 
         if (hit.transform.gameObject.tag == "MorphableObject")
         {
-            CapsuleCollider collider = GetComponent<CapsuleCollider>();
-            collider.enabled = false;
             foreach (Transform possibleObject in listTransform)
             {
                 if (possibleObject.tag == "PossibleForm")
@@ -187,6 +185,7 @@ public class PlayerMove : NetworkBehaviour
                     {
                         possibleObject.gameObject.SetActive(true);
                         transform.position = transform.position + new Vector3(0f,.2f,0f);
+                        cam.transform.SetParent(possibleObject.transform);
                     }
                     else
                     {

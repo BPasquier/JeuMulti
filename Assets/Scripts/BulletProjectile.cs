@@ -27,7 +27,15 @@ public class BulletProjectile : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        if (IsServer)
+        {
+            Destroy(gameObject);
+        }
+        if (collision.transform.tag == "Player" || collision.transform.tag == "PossibleForm")
+        {
+            Debug.Log(collision.gameObject);
+            //collision.gameObject.GetComponent<DamageManager>().dealDamage();
+        }
     }
 
     public void synchro()
