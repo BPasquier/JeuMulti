@@ -1,6 +1,5 @@
 # PropHunt Game
 Pour lancer la partie, lancer la scene située dans le dossier scène dans assets.
-Ne pas oublier de lock l'écran en 16:9
 
 ## Principe
 
