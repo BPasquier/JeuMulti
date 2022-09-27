@@ -20,11 +20,19 @@ public class PlayerMove : NetworkBehaviour
     public int maxAngle = 80;
     [Range(50, 500)]
     public int sensitivity = 200;
-
     public GameObject bodySpin;
+    public int Seeker; // Seeker =-1 Pas choisi / =0 Chassé / =1 Chasseur
+    [SerializeField] private GameObject BodySeeker;
+    [SerializeField] private GameObject BodyHider;
+    [SerializeField] private GameObject Crosshair_Hider;
+    [SerializeField] private GameObject Crosshair_Seeker;
+    [SerializeField] private GameObject MenuCYD;
+
 
     public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<Vector2> ID_Morph = new(writePerm: NetworkVariableWritePermission.Owner); // [ID_Joueur][ID_Obj_Transform]
+    public NetworkVariable<bool> Seeker_sync = new(writePerm: NetworkVariableWritePermission.Owner);
 
     //
     [SerializeField]
@@ -32,9 +40,9 @@ public class PlayerMove : NetworkBehaviour
 
     private void Awake()
     {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        menu = false;
+        menu = true;
+        Seeker = -1;
+
     }
 
     // Start is called before the first frame update
@@ -44,6 +52,7 @@ public class PlayerMove : NetworkBehaviour
         animator = GetComponent<Animator>();
         SupprCameraMenu();
         InitMorph();
+        BodySeeker.SetActive(false);
     }
 
     // Update is called once per frame
@@ -59,9 +68,16 @@ public class PlayerMove : NetworkBehaviour
             }
             else
             {
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                menu = false;
+                if (Seeker >= 0)
+                {
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    menu = false;
+                }
+                else
+                {
+
+                }
             }
         }
         if (menu == false)
@@ -148,7 +164,8 @@ public class PlayerMove : NetworkBehaviour
 
         if (Input.GetKey(KeyCode.E) == true)
         {
-            Morph();
+            if (Seeker == 0)
+                Morph();
         }
         Aim();
     }
@@ -177,7 +194,7 @@ public class PlayerMove : NetworkBehaviour
 
         if (hit.transform.gameObject.tag == "MorphableObject")
         {
-            foreach (Transform possibleObject in listTransform)
+            /*foreach (Transform possibleObject in listTransform)
             {
                 if (possibleObject.tag == "PossibleForm")
                 {
@@ -192,7 +209,31 @@ public class PlayerMove : NetworkBehaviour
                         possibleObject.gameObject.SetActive(false);
                     }
                 }
-            }
+            }*/
+
+
         }
+    }
+    
+    public void ChooseSeeker()
+    {
+        Seeker = 1;
+        BodySeeker.SetActive(true);
+        MenuCYD.SetActive(false);
+        Crosshair_Seeker.SetActive(true);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        menu = false;
+    }
+
+    public void ChooseHider()
+    {
+        Seeker = 0;
+        BodyHider.SetActive(true);
+        MenuCYD.SetActive(false);
+        Crosshair_Hider.SetActive(true);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        menu = false;
     }
 }
