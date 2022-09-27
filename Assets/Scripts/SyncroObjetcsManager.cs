@@ -26,7 +26,7 @@ public class SyncroObjetcsManager : MonoBehaviour
     {
         if (GUILayout.Button("Host")) NetworkManager.Singleton.StartHost();
         if (GUILayout.Button("Client")) NetworkManager.Singleton.StartClient();
-        if (GUILayout.Button("Server")) NetworkManager.Singleton.StartServer();
+        //if (GUILayout.Button("Server")) NetworkManager.Singleton.StartServer();
     }
 
     static void StatusLabels()
@@ -41,7 +41,7 @@ public class SyncroObjetcsManager : MonoBehaviour
 
     public void SubmitNewPosition(Vector3 pos)
     {
-        if (GUILayout.Button(NetworkManager.Singleton.IsServer ? "Move" : "Request Position Change"))
+        /*if (GUILayout.Button(NetworkManager.Singleton.IsServer ? "Move" : "Request Position Change"))
         {
             if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
             {
@@ -54,6 +54,6 @@ public class SyncroObjetcsManager : MonoBehaviour
                 var player = playerObject.GetComponent<SyncroObjects>();
                 player.Move(pos);
             }
-        }
+        }*/
     }
 }
