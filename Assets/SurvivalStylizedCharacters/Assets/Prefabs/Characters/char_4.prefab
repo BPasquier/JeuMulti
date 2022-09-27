@@ -1138,6 +1138,10 @@ MonoBehaviour:
     m_InternalValue: {x: 0, y: 0, z: 0}
   Rotation:
     m_InternalValue: {x: 0, y: 0, z: 0, w: 0}
+  ID_Morph:
+    m_InternalValue: 0
+  Hunter_sync:
+    m_InternalValue: 0
   m_speed: 5
   deathCanvas: {fileID: 4162226925693513607}
 --- !u!54 &6919036399754560930
