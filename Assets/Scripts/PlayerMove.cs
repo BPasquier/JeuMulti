@@ -129,10 +129,13 @@ public class PlayerMove : NetworkBehaviour
                 if (possibleObject.name == "BodySeeker" || possibleObject.name == "BodyHider")
                 {
                     possibleObject.gameObject.SetActive(true);
-                    if (IsClient)
-                        SubmitRequestMorphServerRpc(possibleObject.name);
-                    else
-                        SubmitRequestMorphClientRpc(possibleObject.name);
+                    if (IsOwner)
+                    {
+                        if (IsClient)
+                            SubmitRequestMorphServerRpc(possibleObject.name);
+                        else
+                            SubmitRequestMorphClientRpc(possibleObject.name);
+                    }
                 }
                 else
                 {
