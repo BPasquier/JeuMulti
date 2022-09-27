@@ -17,11 +17,11 @@ public class BulletProjectile : NetworkBehaviour
     private void Start()
     {
         float speed = 10f;
-        bulletRigidBody.velocity = Vector3.forward;
     }
 
     private void Update()
     {
+        //transform.position = transform.position + transform.forward * m_speed * Time.deltaTime;
         synchro();
     }
 

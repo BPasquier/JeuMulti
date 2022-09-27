@@ -7,11 +7,6 @@ using Unity.Netcode;
 
 public class PlayerMove : NetworkBehaviour
 {
-
-    public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<CharacterInfo> MorphName = new(writePerm: NetworkVariableWritePermission.Owner);
-
     // Movement Rotation
     private Vector3 camRotation;
     public Transform cam;
@@ -27,6 +22,9 @@ public class PlayerMove : NetworkBehaviour
     public int sensitivity = 200;
 
     public GameObject bodySpin;
+
+    public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
+    public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
 
     //
     [SerializeField]
@@ -73,8 +71,6 @@ public class PlayerMove : NetworkBehaviour
                 Rotate();
                 Move();
             }
-            else
-                print("test");
             synchro2();
         }
     }

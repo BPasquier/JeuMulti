@@ -7,7 +7,6 @@ public class SyncroObjects : NetworkBehaviour
 {
     public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
-
     [SerializeField]
     private GameObject m_cam;
 

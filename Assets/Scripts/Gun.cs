@@ -7,7 +7,7 @@ public class Gun : NetworkBehaviour
 {
     public GameObject bulletPrefab;
     public Transform bulletSpawnPoint;
-    public float bulletSpeed = 10;
+    public float bulletSpeed = 10f;
     
     // Start is called before the first frame update
     void Start()
@@ -18,32 +18,29 @@ public class Gun : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (IsOwner)
         {
-            if (IsServer)
+            if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("tir Serv");
-                shoot();
-            }
-            else
-            {
-                Debug.Log("tir client");
-                SubmitRequestShotServerRpc();
+                if (IsServer)
+                    shoot(bulletSpawnPoint.position, bulletSpawnPoint.rotation, bulletSpawnPoint.forward);
+                else
+                    SubmitRequestShotServerRpc(bulletSpawnPoint.position, bulletSpawnPoint.rotation, bulletSpawnPoint.forward);
             }
         }
     }
 
-    private void shoot ()
+    private void shoot (Vector3 SpawnPosition, Quaternion SpawnRotation, Vector3 SpawnDirection)
     {
-        var bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+        var bullet = Instantiate(bulletPrefab, SpawnPosition, SpawnRotation);
         bullet.GetComponent<NetworkObject>().Spawn();
-        bullet.GetComponent<Rigidbody>().velocity = bulletSpawnPoint.forward * bulletSpeed;
+        bullet.GetComponent<Rigidbody>().velocity = SpawnDirection * bulletSpeed;
     }
-
+    
     [ServerRpc]
-    private void SubmitRequestShotServerRpc(ServerRpcParams rpcParams = default)
+    private void SubmitRequestShotServerRpc(Vector3 p_SpawnPosition, Quaternion p_SpawnRotation, Vector3 p_SpawnDirection, ServerRpcParams rpcParams = default)
     {
         Debug.Log("in submit request");
-        shoot();
+        shoot(p_SpawnPosition, p_SpawnRotation, p_SpawnDirection);
     }
 }
