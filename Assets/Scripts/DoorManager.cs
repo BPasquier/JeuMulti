@@ -16,6 +16,7 @@ public class DoorManager : MonoBehaviour
     void Update()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        animator.SetBool("character_nearby", false);
         foreach (GameObject player in players)
         {
             if (player != null)
@@ -23,10 +24,6 @@ public class DoorManager : MonoBehaviour
                 if (Vector3.Distance(player.transform.position, transform.position)<range)
                 {
                     animator.SetBool("character_nearby", true);
-                }
-                else
-                {
-                    animator.SetBool("character_nearby", false);
                 }
             }
         }

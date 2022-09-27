@@ -9181,10 +9181,10 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 762665499}
-    PlayerPrefab: {fileID: 7092894880482175597, guid: 47f922546a5737542a5ccbf4dcac06db, type: 3}
+    PlayerPrefab: {fileID: 7092894880482175597, guid: ac4ec22084cd4e74aa45cd6d27cf34d4, type: 3}
     NetworkPrefabs:
     - Override: 0
-      Prefab: {fileID: 7092894880482175597, guid: 47f922546a5737542a5ccbf4dcac06db, type: 3}
+      Prefab: {fileID: 7092894880482175597, guid: ac4ec22084cd4e74aa45cd6d27cf34d4, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}

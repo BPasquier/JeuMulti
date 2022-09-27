@@ -20,7 +20,7 @@ public class PlayerMove : NetworkBehaviour
     public int maxAngle = 80;
     [Range(50, 500)]
     public int sensitivity = 200;
-    public int playerHealth = 10;
+    public int playerHealth = 1;
 
     public GameObject bodySpin;
     public int Seeker; // Seeker =-1 Pas choisi / =0 Chass� / =1 Chasseur
@@ -47,7 +47,6 @@ public class PlayerMove : NetworkBehaviour
     {
         menu = true;
         Seeker = -1;
-
     }
 
     // Start is called before the first frame update
@@ -95,8 +94,8 @@ public class PlayerMove : NetworkBehaviour
                     Move();
                 }
             }
-            synchro2();
         }
+        synchro2();
     }
 
     private void synchro2()
@@ -130,6 +129,10 @@ public class PlayerMove : NetworkBehaviour
                 if (possibleObject.name == "BodySeeker" || possibleObject.name == "BodyHider")
                 {
                     possibleObject.gameObject.SetActive(true);
+                    if (IsClient)
+                        SubmitRequestMorphServerRpc(possibleObject.name);
+                    else
+                        SubmitRequestMorphClientRpc(possibleObject.name);
                 }
                 else
                 {
@@ -175,9 +178,26 @@ public class PlayerMove : NetworkBehaviour
             if (Seeker == 0)
             {
                 if (IsServer)
-                    Morph();
+                {
+                    RaycastHit hit;
+                    Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
+                    if (hit.transform.gameObject.tag == "MorphableObject")
+                    {
+                        Morph(hit.transform.name);
+                        SubmitRequestMorphClientRpc(hit.transform.name);
+                    }
+                }
                 else
-                    SubmitRequestMorphServerRpc();
+                {
+                    RaycastHit hit;
+                    Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
+                    if (hit.transform.gameObject.tag == "MorphableObject")
+                    {
+                        Morph(hit.transform.name);
+                        SubmitRequestMorphServerRpc(hit.transform.name);
+                    }
+                }
+                    
             }
         }
         Aim();
@@ -200,27 +220,21 @@ public class PlayerMove : NetworkBehaviour
         Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
     }
 
-    private void Morph()
+    private void Morph(string Name)
     {
-        RaycastHit hit;
-        Physics.Raycast(cam.transform.position, cam.transform.forward, out hit);
-
-        if (hit.transform.gameObject.tag == "MorphableObject")
+        foreach (Transform possibleObject in listTransform)
         {
-            foreach (Transform possibleObject in listTransform)
+            if (possibleObject.tag == "PossibleForm")
             {
-                if (possibleObject.tag == "PossibleForm")
+                if (Name.IndexOf(possibleObject.name)>-1)
                 {
-                    if (hit.transform.name.IndexOf(possibleObject.name)>-1)
-                    {
-                        possibleObject.gameObject.SetActive(true);
-                        transform.position = transform.position + new Vector3(0f,.2f,0f);
-                        cam.transform.SetParent(possibleObject.transform);
-                    }
-                    else
-                    {
-                        possibleObject.gameObject.SetActive(false);
-                    }
+                    possibleObject.gameObject.SetActive(true);
+                    transform.position = transform.position + new Vector3(0f,.2f,0f);
+                    cam.transform.SetParent(possibleObject.transform);
+                }
+                else
+                {
+                    possibleObject.gameObject.SetActive(false);
                 }
             }
         }
@@ -259,8 +273,14 @@ public class PlayerMove : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SubmitRequestMorphServerRpc(ServerRpcParams rpcParams = default)
+    private void SubmitRequestMorphServerRpc(string p_Name , ServerRpcParams rpcParams = default)
     {
-        Morph();
+        Morph(p_Name);
+    }
+
+    [ClientRpc]
+    private void SubmitRequestMorphClientRpc(string p_Name, ClientRpcParams rpcParams = default)
+    {
+        Morph(p_Name);
     }
 }
