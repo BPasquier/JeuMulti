@@ -33,8 +33,8 @@ public class PlayerMove : NetworkBehaviour
 
     public NetworkVariable<Vector3> Position = new(writePerm: NetworkVariableWritePermission.Owner);
     public NetworkVariable<Quaternion> Rotation = new(writePerm: NetworkVariableWritePermission.Owner);
-    public NetworkVariable<Vector2> ID_Morph = new(writePerm: NetworkVariableWritePermission.Owner); // [ID_Joueur][ID_Obj_Transform]
-    public NetworkVariable<bool> Seeker_sync = new(writePerm: NetworkVariableWritePermission.Owner);
+    /*public NetworkVariable<Vector2> ID_Morph = new(writePerm: NetworkVariableWritePermission.Owner); // [ID_Joueur][ID_Obj_Transform]
+    public NetworkVariable<bool> Seeker_sync = new(writePerm: NetworkVariableWritePermission.Owner);*/
 
     //
     [SerializeField]
@@ -127,7 +127,7 @@ public class PlayerMove : NetworkBehaviour
         {
             if (possibleObject.tag == "PossibleForm")
             {
-                if (possibleObject.name == "Body")
+                if (possibleObject.name == "BodySeeker" || possibleObject.name == "BodyHider")
                 {
                     possibleObject.gameObject.SetActive(true);
                 }
@@ -173,7 +173,12 @@ public class PlayerMove : NetworkBehaviour
         if (Input.GetKey(KeyCode.E) == true)
         {
             if (Seeker == 0)
-                Morph();
+            {
+                if (IsServer)
+                    Morph();
+                else
+                    SubmitRequestMorphServerRpc();
+            }
         }
         Aim();
     }
@@ -202,7 +207,7 @@ public class PlayerMove : NetworkBehaviour
 
         if (hit.transform.gameObject.tag == "MorphableObject")
         {
-            /*foreach (Transform possibleObject in listTransform)
+            foreach (Transform possibleObject in listTransform)
             {
                 if (possibleObject.tag == "PossibleForm")
                 {
@@ -217,9 +222,7 @@ public class PlayerMove : NetworkBehaviour
                         possibleObject.gameObject.SetActive(false);
                     }
                 }
-            }*/
-
-
+            }
         }
     }
     
@@ -244,6 +247,7 @@ public class PlayerMove : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         menu = false;
     }
+
     public void dealDamage(int damage)
     {
         playerHealth -= damage;
@@ -252,5 +256,11 @@ public class PlayerMove : NetworkBehaviour
             UnityEngine.Debug.LogWarning("DealDamages");
             deathCanvas.gameObject.SetActive(true);
         }
+    }
+
+    [ServerRpc]
+    private void SubmitRequestMorphServerRpc(ServerRpcParams rpcParams = default)
+    {
+        Morph();
     }
 }

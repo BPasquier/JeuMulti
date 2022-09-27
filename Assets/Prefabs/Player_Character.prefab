@@ -3288,6 +3288,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4186494075057707492}
+  - component: {fileID: 8928593411703593651}
   m_Layer: 0
   m_Name: BodySeeker
   m_TagString: PossibleForm
@@ -3328,6 +3329,19 @@ Transform:
   m_Father: {fileID: 7092894880482211341}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8928593411703593651
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5060343825918665258}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.58549404, y: 1.9496179, z: 0.49361837}
+  m_Center: {x: 0.029607534, y: 0.972913, z: 0.11105949}
 --- !u!1 &5211362263325614741
 GameObject:
   m_ObjectHideFlags: 0
@@ -5635,7 +5649,6 @@ GameObject:
   - component: {fileID: 4892966094494822067}
   - component: {fileID: 1590820065016073612}
   - component: {fileID: 5369752460164910021}
-  - component: {fileID: 119484891311866419}
   - component: {fileID: 2922561254485153077}
   - component: {fileID: 959060774548832269}
   - component: {fileID: 6147936362170631228}
@@ -5789,20 +5802,6 @@ MonoBehaviour:
   - {fileID: 7092894880482211779}
   - {fileID: 0}
   - {fileID: 0}
---- !u!136 &119484891311866419
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7092894880482175597}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.24765627
-  m_Height: 2.452454
-  m_Direction: 1
-  m_Center: {x: -0.011984535, y: 0.72622705, z: -0.04817559}
 --- !u!114 &2922561254485153077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5852,6 +5851,7 @@ MonoBehaviour:
   minAngle: -80
   maxAngle: 80
   sensitivity: 200
+  playerHealth: 10
   bodySpin: {fileID: 7092894880482175963}
   Seeker: 0
   BodySeeker: {fileID: 5060343825918665258}
@@ -5868,6 +5868,7 @@ MonoBehaviour:
   Seeker_sync:
     m_InternalValue: 0
   m_speed: 5
+  deathCanvas: {fileID: 0}
 --- !u!54 &932216279735119645
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10625,6 +10626,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3191221269693405097, guid: 44d57cfa07de346458450744785d8a7e, type: 3}
   m_PrefabInstance: {fileID: 3008901759950410253}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &3140424871406098409
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 398774052054582692}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.6752187, y: 1.9444671, z: 0.42321193}
+  m_Center: {x: -0.0017094016, y: 0.96711326, z: 0.037855856}
 --- !u!4 &398774052054686148 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3191221269692976073, guid: 44d57cfa07de346458450744785d8a7e, type: 3}
