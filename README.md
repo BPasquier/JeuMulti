@@ -8,8 +8,11 @@ Pour lancer la partie, lancer la scene située dans le dossier scène dans asset
 - **Hider** : le but est de se cacher en se transformant en les objets alentours en visant un objet et en appuyant sur la touche `e`.
 
 ## Crédits
+Jeu faits par Baptiste Pasquier et Luis Leboullenger
+
 `Lune` - Lunar Landscape 3D - *Himmelfar*
 
 `Le décor` - Sci-Fi Styled Modular Pack - *karboosx*
 
 `Le personnage et l'arme` - Survival stylized characters + 5 Weapons - *Alex Lenk*
+
